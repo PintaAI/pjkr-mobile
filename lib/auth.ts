@@ -1,24 +1,14 @@
-import { createAuthClient } from "better-auth/react"; // Assuming 'better-auth/react' is compatible or the primary client export
-import Constants from "expo-constants";
+import { createAuthClient } from "better-auth/react";
+import Constants from 'expo-constants';
 
-// IMPORTANT: Replace this with your actual backend URL.
-// For local development with Expo Go on Android emulator, this might be 'http://10.0.2.2:3000'
-// For iOS simulator, 'http://localhost:3000'
-// For production, your deployed web app URL (e.g., from web/.env.example NEXT_PUBLIC_BETTER_AUTH_URL)
 const getBaseUrl = () => {
-  // A common way to set this up for Expo:
-  // const debuggerHost = Constants.expoConfig?.hostUri?.split(':')[0];
-  // if (debuggerHost && process.env.NODE_ENV === 'development') {
-  //   return `http://${debuggerHost}:3000`; // Assumes web server is on port 3000
-  // }
-  // return Constants.expoConfig?.extra?.betterAuthUrl || "http://localhost:3000"; // Fallback, configure in app.json extra
+  // For development, use localhost
+  if (__DEV__) {
+    return "http://localhost:3000";
+  }
   
-  // For now, using a placeholder. This MUST be configured correctly.
-  // This should point to the `BETTER_AUTH_URL` of your web application.
-  // const webAppBaseUrl = process.env.EXPO_PUBLIC_WEB_APP_URL || "http://localhost:3000"; 
-  // Hardcoding for now as requested:
-  const webAppBaseUrl = "http://192.168.15.34:3000";
-  return webAppBaseUrl;
+  // For production/preview, use the production URL
+  return Constants.expoConfig?.extra?.betterAuthUrl || "https://pjkr-web.vercel.app";
 };
 
 export const authClient = createAuthClient({

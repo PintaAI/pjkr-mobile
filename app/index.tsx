@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 import { useAuth } from '~/context/AuthContext';
-import { Link } from 'expo-router';
-import { Button } from '~/components/ui/button'; // Assuming a styled button component exists
+import { Button } from '~/components/ui/button';
 
 export default function HomeScreen() {
-  const { user, isAuthenticated, isLoading, signOut } = useAuth();
+  const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -16,31 +15,7 @@ export default function HomeScreen() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <View className="flex-1 justify-center items-center bg-background p-5">
-        <ActivityIndicator size="large" color="text-primary" />
-        <Text className="text-foreground mt-4 text-lg">Loading session...</Text>
-      </View>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <View className="flex-1 justify-center items-center bg-background p-5 gap-y-6">
-        <Text className="text-3xl font-bold text-foreground text-center">Welcome!</Text>
-        <Text className="text-lg text-muted-foreground text-center">
-          Please log in to continue.
-        </Text>
-        <Link href="/login" asChild>
-          <Button variant="default" size="lg">
-            <Text>Go to Login</Text>
-          </Button>
-        </Link>
-      </View>
-    );
-  }
-
+  // RouteGuard ensures we only reach here if authenticated
   return (
     <View className="flex-1 justify-center items-center bg-background p-5 gap-y-6">
       <Text className="text-3xl font-bold text-foreground text-center">Welcome Back!</Text>

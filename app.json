@@ -35,6 +35,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "betterAuthUrl": "https://pjkr-web.vercel.app"
     }
   }
 }
