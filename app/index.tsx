@@ -33,7 +33,7 @@ export default function HomeScreen() {
               The User type from `mobile/lib/auth.ts` is `Session['user']`.
             */}
             {'role' in user && <Text className="text-base text-muted-foreground">Role: {String((user as any).role)}</Text>}
-            {'plan' in user && <Text className="text-base text-muted-foreground">Plan: {String((user as any).plan)}</Text>}
+            {'accessTier' in user && <Text className="text-base text-muted-foreground">Plan: {String((user as any).accessTier)}</Text>}
             {'xp' in user && <Text className="text-base text-muted-foreground">XP: {String((user as any).xp)}</Text>}
             {'level' in user && <Text className="text-base text-muted-foreground">Level: {String((user as any).level)}</Text>}
           </View>
