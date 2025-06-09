@@ -96,7 +96,7 @@ export default function LoginScreen() {
         size="lg"
         onPress={() => {
           setIsSigningUp(!isSigningUp);
-          setError(null); 
+          setError(null);
         }}
         disabled={loading}
       >

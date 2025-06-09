@@ -6,7 +6,7 @@ import {
   signOut as performSignOut,
 } from '../lib/auth'; // Adjust path as necessary
 // Import Session and User types from our local auth.ts where they are correctly inferred
-import type { Session, User } from '../lib/auth'; 
+import type { Session, User } from '../lib/auth';
 
 interface AuthContextType {
   session: Session | null;
@@ -16,7 +16,6 @@ interface AuthContextType {
   signInWithEmailPassword: typeof signInEmailPwd;
   signUpWithEmailPassword: typeof signUpEmailPwd;
   signOut: typeof performSignOut;
-  // Add other auth functions like signInWithGoogle if/when implemented for mobile
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

@@ -4,26 +4,19 @@ import Constants from 'expo-constants';
 const getBaseUrl = () => {
   // For development, use localhost
   if (__DEV__) {
-    return "http://localhost:3000";
+    return "http://192.168.15.34:3000";
   }
   
   // For production/preview, use the production URL
   return Constants.expoConfig?.extra?.betterAuthUrl || "https://pjkr-web.vercel.app";
 };
 
+// TODO: Custom storage adapter using Expo SecureStore
+// This would need to be configured based on Better Auth's storage API
+// For now, using default storage while we implement OAuth via web browser
 export const authClient = createAuthClient({
   baseURL: getBaseUrl(),
-  // IMPORTANT FOR REACT NATIVE:
-  // For React Native, you typically need to provide a custom storage adapter
-  // to securely store authentication tokens (e.g., using expo-secure-store).
-  // The default browser-based storage (localStorage) won't work.
-  // Example (you'll need to implement this based on better-auth's API):
-  // storage: {
-  //   getItem: async (key) => await SecureStore.getItemAsync(key),
-  //   setItem: async (key, value) => await SecureStore.setItemAsync(key, value),
-  //   removeItem: async (key) => await SecureStore.removeItemAsync(key),
-  // },
-  // Check the `better-auth` documentation for how to integrate a custom storage adapter.
+  // storage: secureStorage, // Will be added once Better Auth storage API is confirmed
 });
 
 export const {
@@ -63,13 +56,5 @@ export const signUpWithEmailPassword = async (email: string, password: string, n
   return data;
 };
 
-// Note on Social Logins for Mobile:
-// The web's social login (`signIn.social({ provider: "google" })`) typically relies on browser redirects.
-// For a native mobile app, you'd usually:
-// 1. Use a native Google Sign-In library (e.g., @react-native-google-signin/google-signin or expo-auth-session/providers/google)
-//    to perform the OAuth flow on the device.
-// 2. Obtain an `id_token` or `access_token` from the native flow.
-// 3. Send this token to a custom backend endpoint (e.g., /api/auth/mobile/google-signin) which then
-//    validates the token with Google and uses `better-auth` server-side to sign in or sign up the user.
-// This means the `signIn.social` from `better-auth/react-native` might not work out-of-the-box if it expects web-like redirects.
-// You might need to adapt the `web/app/api/auth/[...all]/route.ts` or add a new route for mobile social auth.
+// Mobile authentication uses email/password only
+// OAuth complexity has been removed for simpler implementation
