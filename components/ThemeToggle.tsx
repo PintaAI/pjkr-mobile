@@ -1,18 +1,34 @@
-import { Pressable, View } from 'react-native';
+import { Pressable, View, Appearance } from 'react-native';
 import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
 import { MoonStar } from '~/lib/icons/MoonStar';
 import { Sun } from '~/lib/icons/Sun';
-import { useColorScheme } from '~/lib/useColorScheme';
+import { System } from '~/lib/icons/System';
+import { useColorScheme, type ColorScheme } from '~/lib/useColorScheme';
 import { cn } from '~/lib/utils';
+import * as React from 'react';
+
+const THEME_CYCLE: ColorScheme[] = ['system', 'light', 'dark'];
+
+const ICONS: Record<ColorScheme, React.ReactNode> = {
+  system: <System className='text-foreground' size={23} strokeWidth={1.25} />,
+  light: <Sun className='text-foreground' size={24} strokeWidth={1.25} />,
+  dark: <MoonStar className='text-foreground' size={23} strokeWidth={1.25} />,
+};
 
 export function ThemeToggle() {
-  const { isDarkColorScheme, setColorScheme } = useColorScheme();
+  const { colorScheme, setColorScheme } = useColorScheme();
 
-  function toggleColorScheme() {
-    const newTheme = isDarkColorScheme ? 'light' : 'dark';
-    setColorScheme(newTheme);
-    setAndroidNavigationBar(newTheme);
-  }
+  const toggleColorScheme = async () => {
+    const nextIndex = (THEME_CYCLE.indexOf(colorScheme) + 1) % THEME_CYCLE.length;
+    const nextTheme = THEME_CYCLE[nextIndex];
+    await setColorScheme(nextTheme);
+
+    const effectiveTheme =
+      nextTheme === 'system'
+        ? Appearance.getColorScheme() ?? 'light'
+        : nextTheme;
+    setAndroidNavigationBar(effectiveTheme);
+  };
 
   return (
     <Pressable
@@ -26,11 +42,7 @@ export function ThemeToggle() {
             pressed && 'opacity-70'
           )}
         >
-          {isDarkColorScheme ? (
-            <MoonStar className='text-foreground' size={23} strokeWidth={1.25} />
-          ) : (
-            <Sun className='text-foreground' size={24} strokeWidth={1.25} />
-          )}
+          {ICONS[colorScheme]}
         </View>
       )}
     </Pressable>

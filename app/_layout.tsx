@@ -12,6 +12,7 @@ import { ThemeToggle } from '~/components/ThemeToggle';
 import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
 import { AuthProvider } from '~/context/AuthContext';
 import { RouteGuard } from '~/components/RouteGuard';
+import { PushNotificationProvider } from '~/context/PushNotificationProvider';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -29,11 +30,10 @@ export {
 
 export default function RootLayout() {
   const hasMounted = React.useRef(false);
-  const { colorScheme, isDarkColorScheme } = useColorScheme();
-  const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  const { effectiveColorScheme, isDarkColorScheme, isLoaded } = useColorScheme();
 
   useIsomorphicLayoutEffect(() => {
-    if (hasMounted.current) {
+    if (hasMounted.current || !isLoaded) {
       return;
     }
 
@@ -41,39 +41,47 @@ export default function RootLayout() {
       // Adds the background color to the html element to prevent white background on overscroll.
       document.documentElement.classList.add('bg-background');
     }
-    setAndroidNavigationBar(colorScheme);
-    setIsColorSchemeLoaded(true);
+    setAndroidNavigationBar(effectiveColorScheme);
     hasMounted.current = true;
-  }, []);
+  }, [effectiveColorScheme, isLoaded]);
 
-  if (!isColorSchemeLoaded) {
+  if (!isLoaded) {
     return null;
   }
 
   return (
     <AuthProvider>
-      <RouteGuard>
-        <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-          <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
-          <Stack>
-            <Stack.Screen
-              name='index'
-              options={{
-                title: 'home',
-                headerRight: () => <ThemeToggle />,
-              }}
-            />
-            <Stack.Screen
-              name='login'
-              options={{
-                title: 'Login',
-                headerShown: false, // Hide header on login screen
-              }}
-            />
-          </Stack>
-          <PortalHost />
-        </ThemeProvider>
-      </RouteGuard>
+      <PushNotificationProvider>
+        <RouteGuard>
+          <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+            <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
+            <Stack>
+              <Stack.Screen
+                name='index'
+                options={{
+                  title: 'Home',
+                  headerRight: () => <ThemeToggle />,
+                }}
+              />
+              <Stack.Screen
+                name='welcome'
+                options={{
+                  title: 'Welcome',
+                  headerShown: false, // Hide header on welcome screen
+                }}
+              />
+              <Stack.Screen
+                name='notifications'
+                options={{
+                  title: 'Notifications',
+                  presentation: 'modal',
+                }}
+              />
+            </Stack>
+            <PortalHost />
+          </ThemeProvider>
+        </RouteGuard>
+      </PushNotificationProvider>
     </AuthProvider>
   );
 }

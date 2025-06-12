@@ -14,7 +14,7 @@ function TabsList({
   return (
     <TabsPrimitive.List
       className={cn(
-        'web:inline-flex h-10 native:h-12 items-center justify-center rounded-md bg-muted p-1 native:px-1.5',
+        'web:inline-flex h-12 native:h-14 items-center justify-center bg-transparent border-b border-border/20',
         className
       )}
       {...props}
@@ -29,18 +29,25 @@ function TabsTrigger({
   ref?: React.RefObject<TabsPrimitive.TriggerRef>;
 }) {
   const { value } = TabsPrimitive.useRootContext();
+  const isActive = value === props.value;
+  
   return (
     <TextClassContext.Provider
       value={cn(
-        'text-sm native:text-base font-medium text-muted-foreground web:transition-all',
-        value === props.value && 'text-foreground'
+        'text-sm native:text-base',
+        isActive
+          ? 'text-primary font-medium'
+          : 'text-muted-foreground/70 font-normal'
       )}
     >
       <TabsPrimitive.Trigger
         className={cn(
-          'inline-flex items-center justify-center shadow-none web:whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium web:ring-offset-background web:transition-all web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2',
+          'inline-flex items-center justify-center web:whitespace-nowrap px-4 py-3 native:py-3.5 text-sm font-medium web:ring-offset-background web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-primary web:focus-visible:ring-offset-2 relative',
+          'border-b-2',
           props.disabled && 'web:pointer-events-none opacity-50',
-          props.value === value && 'bg-background shadow-lg shadow-foreground/10',
+          isActive
+            ? 'border-b-primary text-primary'
+            : 'border-b-transparent text-muted-foreground',
           className
         )}
         {...props}
@@ -58,7 +65,7 @@ function TabsContent({
   return (
     <TabsPrimitive.Content
       className={cn(
-        'web:ring-offset-background web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2',
+        'web:ring-offset-background web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-primary web:focus-visible:ring-offset-2 web:animate-in web:fade-in-0 web:slide-in-from-bottom-2 web:duration-200',
         className
       )}
       {...props}
